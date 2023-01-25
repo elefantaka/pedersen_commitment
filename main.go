@@ -13,36 +13,43 @@ import (
 
 func main() {
 	rand.Seed(time.Now().Unix())
-	//2 - fee amount, 3 - splitting amount in 3 amounts
+	// 2 - fee amount, 3 - splitting amount in 3 amounts
 	t := newTxWorker(int64(2), 3)
-	//70 - transaction amount
+	// 70 - transaction amount
 	t.ProcessTxsBlock(70)
 }
 
 type txworker struct {
-	//fee
+	// fee
 	fee int64
-	//number of small transactions (splitting amount in 3 amounts)
+	// number of small transactions (splitting amount in 3 amounts)
 	txCount int64
-	//curve 25519 library
+	// curve 25519
+	// SuiteEd25519 implements some basic functionalities such as Group, HashFactory,
+	// and XOFFactory.
 	suite *edwards25519.SuiteEd25519
 	//public curve points
 	G, H kyber.Point
-	//random number generated
+	// random number generated
+	// A Stream represents a stream cipher.
 	rng cipher.Stream
 }
 
 // constructor
 func newTxWorker(fee int64, txCount int64) *txworker {
+	// NewBlakeSHA256Ed25519 returns a cipher suite based on package
+	// go.dedis.ch/kyber/v3/xof/blake2xb, SHA-256, and the Ed25519 curve.
+	// It produces cryptographically random numbers via package crypto/rand.
 	suite := edwards25519.NewBlakeSHA256Ed25519()
 	rng := random.New()
 	return &txworker{
 		fee:     fee,
 		txCount: txCount,
 		suite:   suite,
-		G:       suite.Point().Pick(rng),
-		H:       suite.Point().Pick(rng),
-		rng:     rng,
+		// Point creates a new Point on the Ed25519 curve, Pick sets the receiver to a fresh random or pseudo-random Point.
+		G:   suite.Point().Pick(rng),
+		H:   suite.Point().Pick(rng),
+		rng: rng,
 	}
 }
 
@@ -54,7 +61,7 @@ func (w *txworker) ProcessTxsBlock(amount int64) {
 	outputCommitment, outputR := w.sumTxs(outputs[:len(outputs)-1])
 	feeCommitment := w.calcFeeComm(inputR, outputR)
 	fmt.Printf("Input commitment: %s\n", inputCommitment)
-	fmt.Printf("Inputs : %v %v\n ", inputs, sumSlice(inputs))
+	fmt.Printf("Inputs : %v %v\n", inputs, sumSlice(inputs))
 	fmt.Printf("Output commitment: %s\n", w.suite.Point().Add(outputCommitment, feeCommitment))
 	fmt.Printf("Outputs : %v %v\n ", outputs, sumSlice(outputs))
 }

@@ -1,7 +1,7 @@
 # Pedersen Commitment
 
 ### Introduction
-Implementation of Pedersen Commitment scheme based on Monero example from https://medium.com/coinmonks/zero-knowledge-proofs-um-what-a092f0ee9f28
+The practical part of the report is a Proof of Concept simulation of a piece of Monero transaction.
 
 ### How it works?
 The program calculates input commitment and inputs of amounts according to transaction amount. Then prepares the output commitment and outputs of trasactions including the fee. When output commitment equals input commitment and the total of outputs trasactions equals trasaction amout the commitment is true.
