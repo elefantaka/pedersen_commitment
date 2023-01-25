@@ -28,7 +28,7 @@ type txworker struct {
 	// SuiteEd25519 implements some basic functionalities such as Group, HashFactory,
 	// and XOFFactory.
 	suite *edwards25519.SuiteEd25519
-	//public curve points
+	// public curve points
 	G, H kyber.Point
 	// random number generated
 	// A Stream represents a stream cipher.
